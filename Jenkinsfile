@@ -12,14 +12,28 @@ pipeline {
                 }
             }
         }
-    stage('Deploy to staging'){
-    	
-    	steps{
-    	
+    stage('Deploy to staging'){    	
+    	steps{    	
     	  build job:'deploy-to-staging'
     	}
-    	
-      }
+    }
     
+    stage('Deploy to production'){
+    	steps{
+    	timeout(time:5,unit:'DAYS'){    		  
+    		  input message:'Approve Deploymnet to production?'    		
+    		}
+    	build job: 'deploy-to-prod'    	
+    	}
+    	post{
+    		success{
+    		  echo 'Code deployed to production'
+    		}
+    		
+    		failure{
+    		 echo 'prod deployed failed
+    		}	
+       	}
+      }
     }
  }
