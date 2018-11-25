@@ -31,11 +31,7 @@ stages{
                     }
                 }
 
-                stage ("Deploy to Production"){
-                    steps {
-                         sh "cp  **/target/*.war /opt/tomcat/latest/webapps/"
-                    }
-                }
+               
             }
         }
     }
