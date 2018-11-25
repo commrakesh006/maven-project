@@ -1,6 +1,16 @@
 pipeline {
     agent any
-    stages{
+
+    parameters {
+         string(name: 'tomcat_dev', defaultValue: '35.154.12.156', description: 'Staging Server')
+         string(name: 'tomcat_prod', defaultValue: '35.154.12.156', description: 'Production Server')
+    }
+
+    triggers {
+         pollSCM('* * * * *')
+     }
+
+stages{
         stage('Build'){
             steps {
                 sh 'mvn clean package'
@@ -12,28 +22,21 @@ pipeline {
                 }
             }
         }
-    stage('Deploy to staging'){    	
-    	steps{    	
-    	  build job:'deploy-to-staging'
-    	}
+
+        stage ('Deployments'){
+            parallel{
+                stage ('Deploy to Staging'){
+                    steps {
+                        sh "cp  **/target/*.war /opt/tomcat/apache-tomcat-8.5.34/webapps"
+                    }
+                }
+
+                stage ("Deploy to Production"){
+                    steps {
+                         sh "cp  **/target/*.war /opt/tomcat/apache-tomcat-8.5.34/webapps"
+                    }
+                }
+            }
+        }
     }
-    
-    stage('Deploy to production'){
-    	steps{
-    	timeout(time:5,unit:'DAYS'){    		  
-    		  input message:'Approve Deploymnet to production?'    		
-    		}
-    	build job: 'deploy-to-prod'    	
-    	}
-    	post{
-    		success{
-    		  echo 'Code deployed to production'
-    		}
-    		
-    		failure{
-    		 echo 'prod deployed failed'
-    		}	
-       	}
-      }
-    }
- }
+}
