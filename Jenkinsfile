@@ -31,7 +31,7 @@ pipeline {
     		}
     		
     		failure{
-    		 echo 'prod deployed failed
+    		 echo 'prod deployed failed'
     		}	
        	}
       }
