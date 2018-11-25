@@ -27,13 +27,13 @@ stages{
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        sh "sudo cp  **/target/*.war /opt/tomcat/latest/webapps"
+                        sh "cp  **/target/*.war /opt/tomcat/latest/webapps"
                     }
                 }
 
                 stage ("Deploy to Production"){
                     steps {
-                         sh "sudo cp  **/target/*.war /opt/tomcat/latest/webapps"
+                         sh "cp  **/target/*.war /opt/tomcat/latest/webapps"
                     }
                 }
             }
